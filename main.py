@@ -7,8 +7,8 @@ app = FastAPI()
 class Libro (BaseModel):
     id: int
     titulo: str
-    edad: int
-    ciudad: Optional[str] = None
+    tipo: int
+    autor: Optional[str] = None
 
 libroList = []
 
@@ -17,7 +17,7 @@ def crear_libro(libro: Libro):
     libroList.append(libro)
     return libro
 
-@app.get("/libro", response_model=List[Libro])
+@app.get("/libros", response_model=List[Libro])
 def get_libros():
     return libroList
 
