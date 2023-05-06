@@ -4,29 +4,29 @@ from typing import List, Optional
 
 app = FastAPI()
 
-class Libro (BaseModel):
-    id: int
-    titulo: str
-    tipo: int
-    autor: Optional[str] = None
+class Comprador (BaseModel):
+    cedula: int 
+    nombre: str 
+    venta: int 
+    item: int 
 
-libroList = []
+compradorList = [] 
 
-@app.post("/libros", response_model=Libro)
-def crear_libro(libro: Libro):
-    libroList.append(libro)
-    return libro
+@app.post("/comprador", response_model=Comprador)
+def crear_comprador(cliente: Comprador):
+    compradorList.append(cliente)
+    return cliente
 
-@app.get("/libros", response_model=List[Libro])
-def get_libros():
-    return libroList
+@app.get("/comprador", response_model=List[Comprador])
+def get_comprador():
+    return compradorList
 
-@app.get("/libros/{libro_id}", response_model=Libro)
-def obtener_libro (libro_id: int):
-    for libro in libroList:
-        if libro.id == libro_id:
-            return libro
-    raise HTTPException(status_code=404, detail="libro no encontrado")
+@app.get("/comprador/{cedula_id}", response_model=Comprador)
+def obtener_comprador (cedula_id: int):
+    for comprador in compradorList:
+        if cedula == cedula:
+            return cliente
+    raise HTTPException(status_code=404, detail="Persona no encontrada")
 
 @app.get("/")
 def read_root():
