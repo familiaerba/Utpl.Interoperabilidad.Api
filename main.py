@@ -10,7 +10,7 @@ class Comprador (BaseModel):
     venta: int 
     item: int 
 
-compradorList = [] 
+compradorList = []
 
 @app.post("/comprador", response_model=Comprador)
 def crear_comprador(cliente: Comprador):
@@ -25,7 +25,7 @@ def get_comprador():
 def obtener_comprador (cedula_id: int):
     for comprador in compradorList:
         if cedula == cedula:
-            return cliente
+            return comprador
     raise HTTPException(status_code=404, detail="Persona no encontrada")
 
 @app.get("/")
