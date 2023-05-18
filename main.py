@@ -30,4 +30,4 @@ def obtener_comprador (cedula_id: int):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "Interoperabilidad 2"}
+    return {"Hello": "Interoperabilidad 5"}
