@@ -4,29 +4,29 @@ from typing import List, Optional
 
 app = FastAPI()
 
-class Comprador (BaseModel):
+class Cliente (BaseModel):
     cedula: int 
     nombre: str 
     venta: int 
     item: int 
 
-compradorList = []
+clienteList = []
 
-@app.post("/comprador", response_model=Comprador)
-def crear_comprador(cliente: Comprador):
-    compradorList.append(cliente)
+@app.post("/client", response_model=Cliente)
+def crear_comprador(cliente: Cliente):
+    clienteList.append(cliente)
     return cliente
 
-@app.get("/comprador", response_model=List[Comprador])
+@app.get("/client", response_model=List[Cliente])
 def get_comprador():
-    return compradorList
+    return clienteList
 
-@app.get("/comprador/{cedula_id}", response_model=Comprador)
+@app.get("/client/{cedula_id}", response_model=Cliente)
 def obtener_comprador (cedula_id: int):
-    for comprador in compradorList:
+    for comprador in clienteList:
         if cedula == cedula:
             return comprador
-    raise HTTPException(status_code=404, detail="Persona no encontrada")
+    raise HTTPException(status_code=404, detail="Cliente no encontrado")
 
 @app.get("/")
 def read_root():
