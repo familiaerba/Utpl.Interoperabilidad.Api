@@ -30,4 +30,4 @@ def obtener_comprador (cedula_id: int):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "frase para comprobar deber"}
+    return {"Hello": "frase para comprobar deber en la nube"}
