@@ -65,11 +65,11 @@ async def crear_comprador(cliente: ClienteEntrada):
     respuestaBase = coleccion.insert_one(itemCliente.dict())
     return itemCliente
 
-@app.get("/client", response_model=List[Cliente])
+@app.get("/client", response_model=List[Cliente], tags = ["clientes"])
 def get_comprador():
     return clienteList
 
-@app.get("/client/{cedula_id}", response_model=Cliente)
+@app.get("/client/{cedula_id}", response_model=Cliente, tags = ["clientes"])
 def obtener_comprador (cedula_id: int):
     for comprador in clienteList:
         if cedula == cedula:
