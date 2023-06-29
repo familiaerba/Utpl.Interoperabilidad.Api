@@ -45,13 +45,13 @@ app = FastAPI(
 
 class Cliente (BaseModel):
     id: str
-    cedula: int 
+    cedula: str
     nombre: str 
     venta: int 
     item: int 
 
 class ClienteEntrada (BaseModel):
-    cedula: int 
+    cedula: str
     nombre: str 
     venta: int 
     item: int 
