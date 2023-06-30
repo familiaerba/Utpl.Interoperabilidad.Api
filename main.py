@@ -4,6 +4,8 @@ from typing import List, Optional
 import uuid
 import pymongo
 
+from fastapi_versioning import VersionedFastAPI, version
+
 cliente = pymongo.MongoClient("mongodb+srv://alexerba:alex2004@cluster0.tghbhkk.mongodb.net/?retryWrites=true&w=majority")
 database = cliente ["deber"]
 coleccion = database["clientes"]
@@ -13,8 +15,8 @@ Utpl tnteroperabilidad API  crea un cliente, buscar en la base y/o eliminarlo.
 
 ## CLIENTE
 
-Tu puedes agragar un cliente.
-Tu puedes listar los clientes registrados.
+ agragar un cliente.
+ listar los clientes registrados.
 
 """
 tags_metadata = [
@@ -27,7 +29,7 @@ tags_metadata = [
 app = FastAPI(
     title="Utpl Interoperabilidad APP",
     description= description,
-    version="semana 11",
+    version="tarea",
     terms_of_service="http://example.com/terms/",
     contact={
         "name": "Alexander Erba",
@@ -60,22 +62,51 @@ class ClienteEntrada (BaseModel):
 clienteList = []
 
 @app.post("/client", response_model=Cliente, tags = ["clientes"])
+@version(1,0)
 async def crear_comprador(cliente: ClienteEntrada):
+        print ('creadro')
     itemCliente = Cliente (id=str(uuid.uuid4()), cedula = cliente.cedula, nombre = cliente.nombre, venta = cliente.venta, item = cliente.item)
     respuestaBase = coleccion.insert_one(itemCliente.dict())
     return itemCliente
 
 @app.get("/client", response_model=List[Cliente], tags = ["clientes"])
+@version(1,0)
 def get_comprador():
     return clienteList
 
 @app.get("/client/{cedula_id}", response_model=Cliente, tags = ["clientes"])
+@version(1,0)
 def obtener_comprador (cedula_id: int):
     for comprador in clienteList:
         if cedula == cedula:
             return comprador
     raise HTTPException(status_code=404, detail="Cliente no encontrado")
 
+## Agregar busqueda por hab.    
+@app.get("/cliente/cod/{hab_num}", response_cliente, tags = ["cliente"])
+@version(2,0)
+def obtener_hab(hab_num: int):
+    item = coleccion.find_one({"hab": hab_num})
+    if item:
+        return item
+    else:
+        raise HTTPException(status_code=404, detail="cliente no encontrado")
+
+    
+
+@app.delete("/cliente/{cliente_id}", tags = ["cliente"])
+@version(1,0)
+def eliminar_huesped (cliente_id: int):
+    persona = next((p for p in personasList if p.id == persona_id), None)
+    if persona:
+        personasList.remove(persona)
+        return {"sms": "Persona Eliminada exitosamente"}
+    else:
+        raise HTTPException(status_code=404, detail="Persona no encontrada")
+    cliente_eliminado = personasList.pop(persona_id)
+
 @app.get("/")
 def read_root():
     return {"Hello": "frase para comprobar deber en la nube"}
+
+app = VersionedFastAPI(app)
