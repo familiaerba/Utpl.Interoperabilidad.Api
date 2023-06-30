@@ -107,6 +107,6 @@ def eliminar_cliente (cliente_id: int):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "frase para comprobar deber en la nube"}
+    return {"Hello": "frase para comprobar deber en la nube 2"}
 
 app = VersionedFastAPI(app)
