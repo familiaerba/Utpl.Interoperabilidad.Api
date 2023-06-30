@@ -96,14 +96,14 @@ def obtener_hab(hab_num: int):
 
 @app.delete("/cliente/{cliente_id}", tags = ["cliente"])
 @version(1,0)
-def eliminar_huesped (cliente_id: int):
-    persona = next((p for p in personasList if p.id == persona_id), None)
+def eliminar_cliente (cliente_id: int):
+    persona = next((p for p in clienteList if p.id == persona_id), None)
     if persona:
-        personasList.remove(persona)
+        clienteList.remove(persona)
         return {"sms": "Persona Eliminada exitosamente"}
     else:
         raise HTTPException(status_code=404, detail="Persona no encontrada")
-    cliente_eliminado = personasList.pop(persona_id)
+    cliente_eliminado = clienteList.pop(persona_id)
 
 @app.get("/")
 def read_root():
