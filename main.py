@@ -121,17 +121,17 @@ def eliminar_Cliente (Cliente_id: str):
     else:
         raise HTTPException(status_code=404, detail="Cliente no encontrada")
 
-@app.get("/pista/{pista_id}", tags = ["artistas"])
+@app.get("/Cliente/{Cliente_id}", tags = ["Cliente"])
 @version(1, 0)
-async def obtener_pista(pista_id: str):
-    track = sp.track(pista_id)
+async def obtener_pista(Cliente_id: str):
+    track = sp.track(Cliente_id)
     return track
     
-@app.get("/artistas/{artista_id}", tags = ["artistas"])
+@app.get("/Cliente/{Cliente_id}", tags = ["Cliente"])
 @version(1, 0)
-async def get_artista(artista_id: str):
-    artista = sp.artist(artista_id)
-    return artista
+async def get_Cliente(Cliente_id: str):
+    Cliente = sp.Client(Cliente_id)
+    return Cliente
 
    
 
