@@ -1,11 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 import uuid
 import pymongo
 
 from fastapi_versioning import VersionedFastAPI, version
-
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from auth import authenticate
 cliente = pymongo.MongoClient("mongodb+srv://alexerba:alex2004@cluster0.tghbhkk.mongodb.net/?retryWrites=true&w=majority")
 database = cliente ["deber"]
 coleccion = database["clientes"]
@@ -43,67 +44,96 @@ app = FastAPI(
     openapi_tags = tags_metadata   
 )
 
-
-
-class Cliente (BaseModel):
+#para agregar seguridad a nuestro api
+security = HTTPBasic()
+class ClienteRepositorio (BaseModel):
     id: str
-    cedula: str
-    nombre: str 
-    venta: int 
-    item: int 
+    nombre: str
+    edad: int
+    identificacion: Optional[str] = None
+    ciudad: Optional[str] = None
 
 class ClienteEntrada (BaseModel):
-    cedula: str
-    nombre: str 
-    venta: int 
-    item: int 
+    nombre:str
+    edad:int
+    ciudad: Optional[str] = None
+
+class ClienteEntradaV2 (BaseModel):
+    nombre:str
+    edad:int
+    identificacion:str
+    ciudad: Optional[str] = None
+
+
 
 
 clienteList = []
 
-@app.post("/client", response_model=Cliente, tags = ["clientes"])
-@version(1,0)
-async def crear_comprador(cliente: ClienteEntrada):
-        print ('creadro')
-    itemCliente = Cliente (id=str(uuid.uuid4()), cedula = cliente.cedula, nombre = cliente.nombre, venta = cliente.venta, item = cliente.item)
-    respuestaBase = coleccion.insert_one(itemCliente.dict())
-    return itemCliente
+@app.post("/cliente", response_model=ClienteRepositorio, tags = ["cliente"])
+@version(1, 0)
+async def crear_cliente(clienteE: ClienteEntrada):
+    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = clienteE.nombre, edad = clienteE.edad, ciudad = clienteE.ciudad)
+    resultadoDB =  coleccion.insert_one(itemcliente.dict())
+    return itemcliente
 
-@app.get("/client", response_model=List[Cliente], tags = ["clientes"])
+@app.post("/cliente", response_model=ClienteRepositorio, tags = ["cliente"])
+@version(2, 0)
+async def crear_Clientev2(clienteE: ClienteEntradaV2):
+    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = personE.nombre, edad = personE.edad, ciudad = personE.ciudad, identificacion = personE.identificacion)
+    resultadoDB =  coleccion.insert_one(itemcliente.dict())
+    return itemcliente
+
+@app.get("/client", response_model=List[ClienteRepositorio], tags = ["clientes"])
 @version(1,0)
 def get_comprador():
     return clienteList
 
-@app.get("/client/{cedula_id}", response_model=Cliente, tags = ["clientes"])
+@app.get("/client/{cedula_id}", response_model=ClienteRepositorio, tags = ["clientes"])
 @version(1,0)
 def obtener_comprador (cedula_id: int):
     for comprador in clienteList:
         if cedula == cedula:
             return comprador
     raise HTTPException(status_code=404, detail="Cliente no encontrado")
+@app.get("/Cliente", response_model=List[ClienteRepositorio], tags=["Cliente"])
+@version(1, 0)
+def get_personas(credentials: HTTPBasicCredentials = Depends(security)):
+    authenticate(credentials)
+    items = list(coleccion.find())
+    print (items)
+    return items
 
-## Agregar busqueda por hab.    
-@app.get("/cliente/cod/{hab_num}", response_cliente, tags = ["cliente"])
-@version(2,0)
-def obtener_hab(hab_num: int):
-    item = coleccion.find_one({"hab": hab_num})
+@app.get("/Cliente/{Cliente_id}", response_model=ClienteRepositorio , tags=["Ciente"])
+@version(1, 0)
+def obtener_Cliente (Cliente_id: str):
+    item = coleccion.find_one({"id": Cliente_id})
     if item:
         return item
     else:
-        raise HTTPException(status_code=404, detail="cliente no encontrado")
+        raise HTTPException(status_code=404, detail="Cliente no encontrada")
 
-    
-
-@app.delete("/cliente/{cliente_id}", tags = ["cliente"])
-@version(1,0)
-def eliminar_cliente (cliente_id: int):
-    persona = next((p for p in clienteList if p.id == persona_id), None)
-    if persona:
-        clienteList.remove(persona)
-        return {"sms": "Persona Eliminada exitosamente"}
+@app.delete("/Cliente/{Cliente_id}", tags=["Cliente"])
+@version(1, 0)
+def eliminar_Cliente (Cliente_id: str):
+    result = coleccion.delete_one({"id": Cliente_id})
+    if result.deleted_count == 1:
+        return {"mensaje": "Cliente eliminada exitosamente"}
     else:
-        raise HTTPException(status_code=404, detail="Persona no encontrada")
-    cliente_eliminado = clienteList.pop(persona_id)
+        raise HTTPException(status_code=404, detail="Cliente no encontrada")
+
+@app.get("/pista/{pista_id}", tags = ["artistas"])
+@version(1, 0)
+async def obtener_pista(pista_id: str):
+    track = sp.track(pista_id)
+    return track
+    
+@app.get("/artistas/{artista_id}", tags = ["artistas"])
+@version(1, 0)
+async def get_artista(artista_id: str):
+    artista = sp.artist(artista_id)
+    return artista
+
+   
 
 @app.get("/")
 def read_root():
