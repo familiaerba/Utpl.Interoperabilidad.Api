@@ -85,12 +85,12 @@ async def crear_Clientev2(clienteE: ClienteEntradaV2):
 
 @app.get("/client", response_model=List[ClienteRepositorio], tags = ["clientes"])
 @version(1,0)
-def get_comprador():
+def get_cliente():
     return clienteList
 
 @app.get("/client/{cedula_id}", response_model=ClienteRepositorio, tags = ["clientes"])
 @version(1,0)
-def obtener_comprador (cedula_id: int):
+def obtener_Cliente (cedula_id: int):
     for comprador in clienteList:
         if cedula == cedula:
             return comprador
