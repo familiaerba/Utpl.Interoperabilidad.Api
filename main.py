@@ -49,19 +49,19 @@ security = HTTPBasic()
 class ClienteRepositorio (BaseModel):
     id: str
     nombre: str
-    edad: int
-    identificacion: Optional[str] = None
+    cantPro: int
+    cedula: Optional[str] = None
     ciudad: Optional[str] = None
 
 class ClienteEntrada (BaseModel):
     nombre:str
-    edad:int
+    cantPro:int
     ciudad: Optional[str] = None
 
 class ClienteEntradaV2 (BaseModel):
     nombre:str
-    edad:int
-    identificacion:str
+    cantPro:int
+    cedula:str
     ciudad: Optional[str] = None
 
 
@@ -72,14 +72,14 @@ clienteList = []
 @app.post("/cliente", response_model=ClienteRepositorio, tags = ["cliente"])
 @version(1, 0)
 async def crear_cliente(clienteE: ClienteEntrada):
-    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = clienteE.nombre, edad = clienteE.edad, ciudad = clienteE.ciudad)
+    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = clienteE.nombre, cantPro = clienteE.cantPro, ciudad = clienteE.ciudad)
     resultadoDB =  coleccion.insert_one(itemcliente.dict())
     return itemcliente
 
 @app.post("/cliente", response_model=ClienteRepositorio, tags = ["cliente"])
 @version(2, 0)
 async def crear_Clientev2(clienteE: ClienteEntradaV2):
-    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = personE.nombre, edad = personE.edad, ciudad = personE.ciudad, identificacion = personE.identificacion)
+    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = personE.nombre, cantPro = personE.cantPro, ciudad = personE.ciudad, cedula = personE.cedula)
     resultadoDB =  coleccion.insert_one(itemcliente.dict())
     return itemcliente
 
@@ -97,7 +97,7 @@ def obtener_comprador (cedula_id: int):
     raise HTTPException(status_code=404, detail="Cliente no encontrado")
 @app.get("/Cliente", response_model=List[ClienteRepositorio], tags=["Cliente"])
 @version(1, 0)
-def get_personas(credentials: HTTPBasicCredentials = Depends(security)):
+def get_Cliente(credentials: HTTPBasicCredentials = Depends(security)):
     authenticate(credentials)
     items = list(coleccion.find())
     print (items)
