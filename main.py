@@ -14,7 +14,7 @@ coleccion = database["clientes"]
 description = """
 Utpl tnteroperabilidad API  crea un cliente, buscar en la base y/o eliminarlo. 
 
-## CLIENTE
+## Cliente
 
  agragar un cliente.
  listar los clientes registrados.
@@ -79,60 +79,35 @@ async def crear_cliente(clienteE: ClienteEntrada):
 @app.post("/cliente", response_model=ClienteRepositorio, tags = ["cliente"])
 @version(2, 0)
 async def crear_Clientev2(clienteE: ClienteEntradaV2):
-    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = personE.nombre, cantPro = personE.cantPro, ciudad = personE.ciudad, cedula = personE.cedula)
+    itemcliente = ClienteRepositorio (id= str(uuid.uuid4()), nombre = clienteE.nombre, cantPro = clienteE.cantPro, ciudad = clienteE.ciudad, cedula = clienteE.cedula)
     resultadoDB =  coleccion.insert_one(itemcliente.dict())
     return itemcliente
 
-@app.get("/client", response_model=List[ClienteRepositorio], tags = ["clientes"])
-@version(1,0)
-def get_cliente():
-    return clienteList
 
-@app.get("/client/{cedula_id}", response_model=ClienteRepositorio, tags = ["clientes"])
-@version(1,0)
-def obtener_Cliente (cedula_id: int):
-    for comprador in clienteList:
-        if cedula == cedula:
-            return comprador
-    raise HTTPException(status_code=404, detail="Cliente no encontrado")
-@app.get("/Cliente", response_model=List[ClienteRepositorio], tags=["Cliente"])
+@app.get("/cliente", response_model=List[ClienteRepositorio], tags=["cliente"])
 @version(1, 0)
-def get_Cliente(credentials: HTTPBasicCredentials = Depends(security)):
-    authenticate(credentials)
+def get_Cliente():
     items = list(coleccion.find())
     print (items)
     return items
 
-@app.get("/Cliente/{Cliente_id}", response_model=ClienteRepositorio , tags=["Ciente"])
+@app.get("/cliente/{cliente_id}", response_model=ClienteRepositorio , tags=["cliente"])
 @version(1, 0)
-def obtener_Cliente (Cliente_id: str):
-    item = coleccion.find_one({"id": Cliente_id})
+def obtener_Cliente (cliente_id: str):
+    item = coleccion.find_one({"id": cliente_id})
     if item:
         return item
     else:
         raise HTTPException(status_code=404, detail="Cliente no encontrada")
 
-@app.delete("/Cliente/{Cliente_id}", tags=["Cliente"])
+@app.delete("/cliente/{cliente_id}", tags=["cliente"])
 @version(1, 0)
-def eliminar_Cliente (Cliente_id: str):
-    result = coleccion.delete_one({"id": Cliente_id})
+def eliminar_Cliente (cliente_id: str):
+    result = coleccion.delete_one({"id": cliente_id})
     if result.deleted_count == 1:
         return {"mensaje": "Cliente eliminada exitosamente"}
     else:
         raise HTTPException(status_code=404, detail="Cliente no encontrada")
-
-@app.get("/Cliente/{Cliente_id}", tags = ["Cliente"])
-@version(1, 0)
-async def obtener_pista(Cliente_id: str):
-    track = sp.track(Cliente_id)
-    return track
-    
-@app.get("/Cliente/{Cliente_id}", tags = ["Cliente"])
-@version(1, 0)
-async def get_Cliente(Cliente_id: str):
-    Cliente = sp.Client(Cliente_id)
-    return Cliente
-
    
 
 @app.get("/")
